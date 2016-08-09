@@ -1,19 +1,21 @@
 class NumToWord
-  NumberWithThousand = {0 => "", 1 => "thousand", 2 => "million", 3 => "billion", 4 => "trillion"}
+  DECIMAL_UNITS = {0 => "", 1 => "thousand", 2 => "million", 3 => "billion", 4 => "trillion"}
   Hundred = "hundred"
-  NumerWithTwentyToNinety = {0 => "", 2 => "twenty", 3 => "thirty", 4 => "forty",
-                             5 => "fifty", 6 => "sixty", 7 => "seventy",
-                             8 => "eighty", 9 => 'ninety'}
+  Twenty_To_Ninety = {0 => "", 2 => "twenty", 3 => "thirty", 4 => "forty",
+                      5 => "fifty", 6 => "sixty", 7 => "seventy",
+                      8 => "eighty", 9 => 'ninety'}
+  
+  Ten_To_Twenty = {0 => "", 10 => "ten", 11 => "eleven",
+                   12 => "twelve", 13 => "thirteen",
+                   14 => "fourteen", 15 => "fifteen",
+                   16 => "sixteen", 17 => "seventeen",
+                   18 => "eighteen", 19 => "nineteen"}
 
-  NumberWithTen = {0 => "", 1 => "one", 2 => "two", 3 => "three", 
-                   4 => "four", 5 => "five", 6 => "six", 7 => "seven",
-                   8 => "eight", 9 => "nine"}
+  Ten = {0 => "", 1 => "one", 2 => "two", 3 => "three", 
+         4 => "four", 5 => "five", 6 => "six", 7 => "seven",
+         8 => "eight", 9 => "nine"}
+  ZERO = "zero"
 
-  NumberWithTenToTwenty = {0 => "", 10 => "ten", 11 => "eleven",
-                           12 => "twelve", 13 => "thirteen",
-                           14 => "fourteen", 15 => "fifteen",
-                           16 => "sixteen", 17 => "seventeen",
-                           18 => "eighteen", 19 => "nineteen"}
 
   def get_num_to_word
     input = gets.chomp
@@ -26,15 +28,16 @@ class NumToWord
   end
 
   def num_to_word(num)
+    return ZERO if num.to_i == 0
+    word = ""
     nums = number_with_thousand(num.to_i)
     t_nums_size = nums.size
-    word = ""
     nums.each_with_index do |t_num, index|
       num_index = t_nums_size - index - 1
-      word += read_hundred_word(t_num.flatten) + " " + NumberWithThousand[num_index]
-      word += word_separator(t_num, num_index)
+      word += read_hundred_word(t_num.flatten) + " " + DECIMAL_UNITS[num_index]
+      word += num.to_i % 1000 == 0 ? "" : word_separator(t_num, num_index)
     end
-    word.chomp
+    word.strip
   end
 
   def read_hundred_word(nums)
@@ -62,19 +65,19 @@ class NumToWord
   end
 
   def read_percentile(percentile)
-    NumberWithTen[percentile] + " " + Hundred
+    Ten[percentile] + " " + Hundred
   end
 
   def read_tenth(tenth, unit)
     if unit == 0
-      NumerWithTwentyToNinety[tenth]
+      Twenty_To_Ninety[tenth]
     else
-      NumerWithTwentyToNinety[tenth] + "-" + NumberWithTen[unit]
+      Twenty_To_Ninety[tenth] + "-" + Ten[unit]
     end
   end
 
   def read_unit(unit)
-    NumberWithTen.merge(NumberWithTenToTwenty)[unit]
+    Ten.merge(Ten_To_Twenty)[unit]
   end
 
   def number_with_thousand(num)
