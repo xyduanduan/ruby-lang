@@ -1,6 +1,6 @@
 require_relative('./spec_helper.rb')
 
-describe Series do
+describe FizzBuzz do
 
   describe '#get series' do
 

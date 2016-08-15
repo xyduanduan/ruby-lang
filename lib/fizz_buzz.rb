@@ -1,11 +1,11 @@
 require_relative('exception.rb')
 
-class Series
+class FizzBuzz
 
   FizzNUM = 3
   BuzzNUM = 5
 
-  def get_series
+  def get_fizz_buzz
     input = gets.chomp
     output(input)
   end

@@ -7,7 +7,7 @@ describe NumToWord do
     context 'ones place' do
       it " 0 " do 
         result = input.num_to_word(0)
-        expect(result).to eq("")
+        expect(result).to eq("zero")
       end
 
       it " 9 " do 

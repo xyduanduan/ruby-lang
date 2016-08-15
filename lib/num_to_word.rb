@@ -1,6 +1,8 @@
 class NumToWord
   DECIMAL_UNITS = {0 => "", 1 => "thousand", 2 => "million", 3 => "billion", 4 => "trillion"}
+
   Hundred = "hundred"
+
   Twenty_To_Ninety = {0 => "", 2 => "twenty", 3 => "thirty", 4 => "forty",
                       5 => "fifty", 6 => "sixty", 7 => "seventy",
                       8 => "eighty", 9 => 'ninety'}
@@ -14,6 +16,7 @@ class NumToWord
   Ten = {0 => "", 1 => "one", 2 => "two", 3 => "three", 
          4 => "four", 5 => "five", 6 => "six", 7 => "seven",
          8 => "eight", 9 => "nine"}
+
   ZERO = "zero"
 
 
@@ -30,27 +33,27 @@ class NumToWord
   def num_to_word(num)
     return ZERO if num.to_i == 0
     word = ""
-    nums = number_with_thousand(num.to_i)
+    nums = number_wrap(num.to_i)
     t_nums_size = nums.size
     nums.each_with_index do |t_num, index|
       num_index = t_nums_size - index - 1
-      word += read_hundred_word(t_num.flatten) + " " + DECIMAL_UNITS[num_index]
+      word += read_num_word(t_num.flatten) + " " + DECIMAL_UNITS[num_index]
       word += num.to_i % 1000 == 0 ? "" : word_separator(t_num, num_index)
     end
     word.strip
   end
 
-  def read_hundred_word(nums)
-    send("read_hundred_word_with_size_#{nums.size}", nums)
+  def read_num_word(nums)
+    send("read_num_word_with_size_#{nums.size}", nums)
   end
 
-  def read_hundred_word_with_size_3(nums)
+  def read_num_word_with_size_3(nums)
     percentile = read_percentile(nums[0])
     tenth = read_tenth(nums[1], nums[2])
     tenth != "" ? percentile + " and " + tenth : percentile
   end
 
-  def read_hundred_word_with_size_2(nums)
+  def read_num_word_with_size_2(nums)
     if nums[1] >= 10
       percentile = read_percentile(nums[0])
       unit = read_unit(nums[1])
@@ -60,7 +63,7 @@ class NumToWord
     end
   end
 
-  def read_hundred_word_with_size_1(nums)
+  def read_num_word_with_size_1(nums)
     read_unit(nums[0])
   end
 
@@ -72,7 +75,9 @@ class NumToWord
     if unit == 0
       Twenty_To_Ninety[tenth]
     else
-      Twenty_To_Ninety[tenth] + "-" + Ten[unit]
+      tenth = Twenty_To_Ninety[tenth]
+      unit = Ten[unit]
+      tenth != "" ? tenth + "-" + unit : unit
     end
   end
 
@@ -80,7 +85,7 @@ class NumToWord
     Ten.merge(Ten_To_Twenty)[unit]
   end
 
-  def number_with_thousand(num)
+  def number_wrap(num)
     nums = []
     while num >= 1000
       tmp = num % 1000
@@ -96,14 +101,22 @@ class NumToWord
     while num > 100
       tmp = num % 100
       num = num / 100
-      nums << number_with_ten(tmp)
+      nums << number_with_tenth(tmp)
     end
-    nums << number_with_ten(num)
+    nums << number_with_unit(num)
     nums.reverse
   end
 
-  def number_with_ten(num)
+  def number_with_tenth(num)
+    num >= 20 ? num.to_s.scan(/\d/).collect(&:to_i) : fill_number_with_0(num)
+  end
+
+  def number_with_unit(num)
     num >= 20 ? num.to_s.scan(/\d/).collect(&:to_i) : num
+  end
+
+  def fill_number_with_0(num)
+    num < 10 ? [0, num] : num
   end
 
   def numbers_end_with_0(nums)

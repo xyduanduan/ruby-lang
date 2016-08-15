@@ -1,8 +1,8 @@
-class Wrap
+class AutoWrap
 
   MAXIMUM = 6
 
-  def get_wrap
+  def get_auto_wrap
     input = gets.chomp
     output(input)
   end
