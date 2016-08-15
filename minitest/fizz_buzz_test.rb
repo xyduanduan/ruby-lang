@@ -29,10 +29,6 @@ class TestFizzBuzz < Minitest::Test
     assert_equal "2", fizz_buzz(2)
   end
 
-  def test_input_num_to_self
-    assert_equal "2", fizz_buzz(2)
-  end
-
   def test_input_is_not_a_num
     exception = assert_raises(InvalidInputException){@input.output('abc')}      
     assert_equal('Please enter a number', exception.message)
